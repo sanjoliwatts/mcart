@@ -20,7 +20,7 @@ public class OrderDetails {
 	private int productId;
 	
 	@Column(name="product_name")
-	private int productName;
+	private String productName;
 	
 	@Column(name="quantity")
 	private int quantity;
@@ -43,11 +43,11 @@ public class OrderDetails {
 		this.productId = productId;
 	}
 
-	public int getProductName() {
+	public String getProductName() {
 		return productName;
 	}
 
-	public void setProductName(int productName) {
+	public void setProductName(String productName) {
 		this.productName = productName;
 	}
 

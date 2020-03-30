@@ -13,23 +13,23 @@ import java.util.Date;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(
-        value = {"dateOfCreation", "updatedAt", "dateOfOrder"},
+		value = { "dateOfCreation", "dateOfModification"/* , "dateOfOrder" */},
         allowGetters = true
 )
 public abstract class AuditModel implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_of_creation", nullable = false, updatable = false)
     @CreatedDate
-    private Date dateOfCreation;
+    private Date dateOfCreation = new Date();
     
     
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_of_creation", nullable = false, updatable = false)
-    @CreatedDate
-    private Date dateOfOrder;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(name = "date_of_order", nullable = false, updatable = false, insertable = false)
+//    @CreatedDate
+//    private Date dateOfOrder;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_of_modification", nullable = false)
+    @Column(name = "date_of_modification", nullable = true, insertable= false)
     @LastModifiedDate
     private Date dateOfModification;
 
@@ -46,16 +46,16 @@ public abstract class AuditModel implements Serializable {
     }
 
     public void setDateOfModification(Date dateOfModification) {
-        this.dateOfModification = dateOfModification;
+        this.dateOfModification = new Date();
     }
-
-	public Date getDateOfOrder() {
-		return dateOfOrder;
-	}
-
-	public void setDateOfOrder(Date dateOfOrder) {
-		this.dateOfOrder = dateOfOrder;
-	}
+//
+//	public Date getDateOfOrder() {
+//		return dateOfOrder;
+//	}
+//
+//	public void setDateOfOrder(Date dateOfOrder) {
+//		this.dateOfOrder = dateOfOrder;
+//	}
    
     
 }

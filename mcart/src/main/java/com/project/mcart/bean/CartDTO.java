@@ -1,44 +1,25 @@
-package com.project.mcart.entity;
+package com.project.mcart.bean;
 
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.TableGenerator;
+import com.project.mcart.entity.Cart;
+import com.project.mcart.entity.CartDetails;
 
-@Entity
-@TableGenerator(name="cartGen", initialValue=100) //, allocationSize=50
-public class Cart{
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="cartGen")
-	@Column(name = "cart_id")
+public class CartDTO {
 	private int cartId;
 	
-	@Column(name = "username")
 	private String username;
 
-	@Column(name="date_of_creation")
 	private Date dateOfCreation;
 
-	@Column(name="date_of_modification")
 	private Date dateOfModification;
 
-	@Column(name = "status")
 	private String status;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="cart_id", referencedColumnName =  "cart_id")
 	private List<CartDetails> productsInCart;
 	
-	public Cart() {}
+	public CartDTO() {}
 
 	public int getCartId() {
 		return cartId;
@@ -88,6 +69,16 @@ public class Cart{
 		this.productsInCart = productsInCart;
 	}
 	
+	public static Cart toEntity(CartDTO cartDTO) {
+		Cart cart = new Cart();
+		cart.setDateOfCreation(new Date());
+		cart.setProductsInCart(cartDTO.getProductsInCart());
+		cart.setStatus(cartDTO.getStatus());
+		cart.setUsername(cartDTO.getUsername());
+		
+		return cart;
+	}
+	
 	@Override
 	public String toString() {
 		return "cartId: "+this.cartId+" --- username: "+this.username+" --- dateOfCreation: "+
@@ -95,5 +86,5 @@ public class Cart{
 	"productsInCart "+this.productsInCart.toString();
 	}
 	
+	
 }
-

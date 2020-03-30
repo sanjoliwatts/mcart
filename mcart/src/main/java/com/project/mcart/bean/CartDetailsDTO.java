@@ -1,33 +1,18 @@
-package com.project.mcart.entity;
+package com.project.mcart.bean;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.TableGenerator;
 
-
-@Entity
-//@TableGenerator(name="cartDetailsGen", initialValue=101) //, allocationSize=50
-public class CartDetails {
-
-//	@Id
-//	@GeneratedValue(strategy=GenerationType.TABLE, generator="cartDetailsGen")
-	@Column(name = "cart_id")
+public class CartDetailsDTO {
+	
 	private int cartId;
 	
-	@Id
-	@Column(name = "product_id")
 	private int productId;
 	
-	@Column(name = "product_name")
 	private String productName;
 	
-	@Column(name = "quantity")
 	private int quantity;
 	
-	public CartDetails() {}
+	public CartDetailsDTO() {}
 
 	public int getCartId() {
 		return cartId;
@@ -66,7 +51,4 @@ public class CartDetails {
 		return "cartId: "+this.cartId+" --- productId: "+this.productId+" ---productName: "+this.productName+
 				" ---quantity "+this.quantity;
 	}
-	
-	
 }
-
