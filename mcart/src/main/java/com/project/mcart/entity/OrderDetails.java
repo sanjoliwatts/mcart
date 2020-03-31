@@ -8,14 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.TableGenerator;
 
 @Entity
-@TableGenerator(name="OrderDetails", initialValue=2001)
+@TableGenerator(name="OrderDetailsGen")
 public class OrderDetails {
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="OrderDetails")
+	
 	@Column(name="order_id")
 	private int orderId;
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.TABLE, generator="OrderDetailsGen")
 	@Column(name="product_id")
 	private int productId;
 	

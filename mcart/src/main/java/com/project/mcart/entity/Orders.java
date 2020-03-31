@@ -14,11 +14,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
 
 @Entity
-@TableGenerator(name="Orders", initialValue=2001) //, allocationSize=50
+@TableGenerator(name="ordersGen", initialValue=2000) //, allocationSize=50
 public class Orders{
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.TABLE, generator="Order")
+	@GeneratedValue(strategy=GenerationType.TABLE, generator="ordersGen")
 	@Column(name="order_id")
 	private int orderId;
 	

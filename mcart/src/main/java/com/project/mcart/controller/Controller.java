@@ -13,12 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.mcart.bean.CartDTO;
@@ -67,15 +70,10 @@ public class Controller {
 		return mcartService.getProducts(type);
 	}
 	
-//	@PostMapping("/carts")
-//	public String insertToCart(@RequestBody CartDTO cartDTO) {
-//		logger.info("Inside controllerrrr");
-//		return mcartService.insertToCart(cartDTO);
-//	}
+
 	
 	@PostMapping("/carts")
 	public ResponseEntity<String> insertToCart(@RequestBody Cart cart) {
-		//logger.info("Inside controllerrrr");
 		return new ResponseEntity<>(mcartService.insertToCart(cart),HttpStatus.OK);
 	}
 	
@@ -84,6 +82,28 @@ public class Controller {
 		return new ResponseEntity<>(mcartService.updateCart(cart),HttpStatus.OK);
 	}
 	
+	//@RequestMapping(value="/carts", method=RequestMethod.GET)
+	@GetMapping(value="/carts")
+	public List<Cart> getCart(){
+		logger.info("getcart");
+		return mcartService.getCart();
+	}
+	
+	/**
+	 * Method used to get object from cart for a particular user
+	 * @RequestMapping(value="/carts", method=RequestMethod.GET, params="username") can also be used
+	 * @param username
+	 * @return Cart
+	 */
+	@GetMapping(value="/carts",  params="username")
+	public Cart getCartByUsername(@RequestParam String username) {
+		return mcartService.getCartByUsername(username);
+	}
+	
+	@DeleteMapping("/products/{productName}")
+	public ResponseEntity<String> deleteProduct(@PathVariable("productName") String productName) {
+		return new ResponseEntity<>(mcartService.deleteProduct(productName), HttpStatus.OK);
+	}
 	
 	
 	

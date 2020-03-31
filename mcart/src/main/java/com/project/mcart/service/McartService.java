@@ -95,4 +95,23 @@ public class McartService {
 		return "User's cart is not available";
 	}
 	
+	public List<Cart> getCart(){
+		logger.info("getCaart....");
+		return cartRepository.findAll();
+	}
+	
+	public Cart getCartByUsername(String username){
+		Optional<Cart> optCartRet = cartRepository.findByUsername(username);
+		return optCartRet.get();
+	}
+	
+	public String deleteProduct(String productName) {
+		Optional<Products> prodRet = productRepository.findByProductName(productName);
+		if(prodRet.isPresent()) {
+			productRepository.delete(prodRet.get());
+			return "Product removed successfully";
+		}
+		return "Product Not Available";
+	}
+	
 }
