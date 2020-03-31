@@ -9,13 +9,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.project.mcart.bean.CartDTO;
 import com.project.mcart.bean.UsersDTO;
 import com.project.mcart.entity.Cart;
+import com.project.mcart.entity.CartDetails;
+import com.project.mcart.entity.OrderDetails;
+import com.project.mcart.entity.Orders;
 import com.project.mcart.entity.Products;
 import com.project.mcart.entity.Users;
 import com.project.mcart.repository.CartRepository;
+import com.project.mcart.repository.OrderRepository;
 import com.project.mcart.repository.ProductRepository;
 import com.project.mcart.repository.UserRepository;
 
@@ -29,6 +34,9 @@ public class McartService {
 	
 	@Autowired
 	private CartRepository cartRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	
 	final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
 	
@@ -112,6 +120,34 @@ public class McartService {
 			return "Product removed successfully";
 		}
 		return "Product Not Available";
+	}
+	
+	public String createNewOrder(String username, int orderAmount) {
+		logger.info("Service username "+username+" orderAmount "+orderAmount);
+		
+		Cart cart = cartRepository.findByUsername(username).get();
+		cart.setStatus("Closed");
+		cart =  cartRepository.save(cart);
+		
+		Orders order = new Orders();
+		order.setDateOfOrder(new Date());
+		order.setOrderAmount(orderAmount);
+		order.setCartId(cart.getCartId());
+		order = orderRepository.save(order);
+		List<OrderDetails> list = new ArrayList<OrderDetails>();
+		for(CartDetails c:cart.getProductsInCart()) {
+			OrderDetails orderDetails = new OrderDetails();
+			orderDetails.setProductName(c.getProductName());
+			orderDetails.setQuantity(c.getQuantity());
+			//orderDetails.setProductId(c.getProductId());  ----Autogenerate primary key
+			orderDetails.setOrderId(order.getOrderId());
+			list.add(orderDetails);
+		}
+		order.setProductsInOrder(list);
+		orderRepository.save(order);
+		
+		logger.info("cart "+cart.toString());
+		return "New Order Placed With Id: "+order.getOrderId();
 	}
 	
 }

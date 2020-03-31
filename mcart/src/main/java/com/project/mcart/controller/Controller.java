@@ -1,11 +1,13 @@
 package com.project.mcart.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
 import javax.validation.Valid;
 
+import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +105,13 @@ public class Controller {
 	@DeleteMapping("/products/{productName}")
 	public ResponseEntity<String> deleteProduct(@PathVariable("productName") String productName) {
 		return new ResponseEntity<>(mcartService.deleteProduct(productName), HttpStatus.OK);
+	}
+	
+	@PostMapping("/orders")
+	public ResponseEntity<String> createNewOrder(@RequestBody Map<String, String> map){
+		logger.info("map "+map);
+
+		return new ResponseEntity<>(mcartService.createNewOrder(map.get("username"), Integer.parseInt(map.get("orderAmount"))),HttpStatus.OK);
 	}
 	
 	
