@@ -1,5 +1,6 @@
 package com.project.mcartorders.service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,7 +30,12 @@ public class OrderService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired 
+	DiscoveryClient client;
+	
 	final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
+	
+
 	
 	public String createNewOrder(String username, int orderAmount) {
 		logger.info("Service username "+username+" orderAmount "+orderAmount);
@@ -40,7 +48,7 @@ public class OrderService {
 		order.setCartId(cartDTO.getCartId());
 		order = orderRepository.save(order);
 		
-		List<OrderDetailsDTO> list = new ArrayList<OrderDetailsDTO>();
+		
 		for(CartDetailsDTO c: cartDTO.getProductsInCart()) {
 			OrderDetailsDTO orderDetails = new OrderDetailsDTO();
 			orderDetails.setProductName(c.getProductName());
@@ -54,11 +62,20 @@ public class OrderService {
 	}
 	
 	 public CartDTO getCallToUpdateCartStatus(String username, String status) {
-		 return restTemplate.getForObject("http://localhost:8083/updateCartStatus?"
+		 
+		 List<ServiceInstance> instances=client.getInstances("MCARTCART");
+		 ServiceInstance instance=instances.get(0);
+		 URI cartURI = instance.getUri();
+		 
+		 return restTemplate.getForObject(cartURI+"/carts/updateCartStatus?"
 					+"username="+username+"&status="+status, CartDTO.class);
 	 }
 	 
 	 public String postCallToSaveOrderDetails(OrderDetailsDTO orderDetails) {
-		 return restTemplate.postForObject("http://localhost:8086/saveOrderDetails/", orderDetails, String.class);
+			List<ServiceInstance> instances=  client.getInstances("MCARTORDERDETAILS");
+			ServiceInstance instance=instances.get(0);
+			URI orderDetailsURI = instance.getUri();
+		 
+		 return new RestTemplate().postForObject(orderDetailsURI+"/orderDetails/saveOrderDetails/", orderDetails, String.class);
 	 }
 }

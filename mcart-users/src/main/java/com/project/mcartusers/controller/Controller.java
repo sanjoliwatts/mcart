@@ -29,13 +29,13 @@ public class Controller {
 	userService service;
 	final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
 
-	@PostMapping("/login")
+	@PostMapping("/users/login")
 	public Boolean validateLogin(@RequestBody Users users) {
 		logger.info("Inside Controller validate login");
 		return service.validateLogin(users);
 	}
 	
-	@PostMapping("/signup")
+	@PostMapping("/users/signup")
 	public ResponseEntity signup(@Valid @RequestBody UsersDTO userDTO, Errors errors) {
 		String response = "";
 		logger.info("Inside Controller signup");

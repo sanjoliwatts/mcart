@@ -23,7 +23,7 @@ public class Controller {
 	private ProductService mcartService;
 	final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
 	
-	@GetMapping("/{type}")
+	@GetMapping("/products/{type}")
 	public List<Products> getProducts(@PathVariable("type") String type) {
 		return mcartService.getProducts(type);
 	}

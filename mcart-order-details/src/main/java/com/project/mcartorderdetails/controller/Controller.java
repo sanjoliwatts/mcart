@@ -25,7 +25,7 @@ public class Controller {
 	final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
 
 	
-	@PostMapping("/saveOrderDetails")
+	@PostMapping("/orderDetails/saveOrderDetails")
 	public String insertToCart(@RequestBody OrderDetailsDTO orderDetailsDTO) {
 		return orderDetailsService.insertToOrderDetails(orderDetailsDTO);
 	}

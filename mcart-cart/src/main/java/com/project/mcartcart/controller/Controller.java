@@ -61,7 +61,7 @@ public class Controller {
 		return cartService.getCartByUsername(username);
 	}
 	
-	@GetMapping(value="/updateCartStatus")
+	@GetMapping(value="/carts/updateCartStatus")
 	public CartDTO updateCart(@RequestParam("username") String username, @RequestParam("status") String status) {
 		return cartService.updateCartStatus(username, status);
 	}

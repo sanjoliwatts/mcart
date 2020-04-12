@@ -1,5 +1,7 @@
 package com.project.mcartcart.service;
 
+import java.net.URI;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +12,8 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -32,7 +36,12 @@ public class CartService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired 
+	DiscoveryClient client;
+	
+	
 	final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
+	//final URI cartDetailsURI = getCartDetailsURI();
 
 	public String insertToCart(CartDTO cartDTO) {
 		
@@ -55,11 +64,23 @@ public class CartService {
 			cartDTO.setStatus("Active");
 			Cart cartRet = cartRepository.saveAndFlush(CartDTO.toEntity(cartDTO));
 			cartDTO.setCartId(cartRet.getCartId());
-			ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8084/cartDetails/", 
+			
+			List<ServiceInstance> instances=client.getInstances("MCARTCARTDETAILS");
+			ServiceInstance instance=instances.get(0);
+			URI cartDetailsURI = instance.getUri();
+			
+			ResponseEntity<String> response = restTemplate.postForEntity(cartDetailsURI+"/cartDetails/", 
 					cartDTO, String.class);
 			return "New items got inserted into the cart with the ID: "+cartRet.getCartId();
 		}
 	}
+	
+//	public URI getCartDetailsURI() {
+//		List<ServiceInstance> instances=client.getInstances("MCARTCARTDETAILS");
+//		ServiceInstance instance=instances.get(0);
+//		URI cartDetailsURI = instance.getUri();
+//		return cartDetailsURI;
+//	}
 	
 	public CartDTO updateCartStatus(String username, String status) {
 		Optional<Cart> cartRet = cartRepository.findByUsername(username);
@@ -104,8 +125,13 @@ public class CartService {
 	}
 	
 	public String PutCartDetails(int id, CartDTO cartDTO) {
+		
+		List<ServiceInstance> instances=client.getInstances("MCARTCARTDETAILS");
+		ServiceInstance instance=instances.get(0);
+		URI cartDetailsURI = instance.getUri();
+		
 		HttpEntity<CartDTO> entity = new HttpEntity<CartDTO>(cartDTO);
-		return restTemplate.exchange("http://localhost:8084/cartDetails/"
+		return restTemplate.exchange(cartDetailsURI+"/cartDetails/"
 				+id,HttpMethod.PUT, entity, String.class).getBody();
 	}
 	
@@ -126,7 +152,13 @@ public class CartService {
 	}
 	
 	public List<CartDetailsDTO>  getCartDetails(Cart c){
-		ResponseEntity<List<CartDetailsDTO>> listResponse = restTemplate.exchange("http://localhost:8084/cartDetails/"
+		
+		List<ServiceInstance> instances=client.getInstances("MCARTCARTDETAILS");
+		ServiceInstance instance=instances.get(0);
+		URI cartDetailsURI = instance.getUri();
+		logger.info("cartDetailsURI "+cartDetailsURI);
+		
+		ResponseEntity<List<CartDetailsDTO>> listResponse = restTemplate.exchange(cartDetailsURI+"/cartDetails/"
 				+c.getCartId(),HttpMethod.GET, null,  new ParameterizedTypeReference<List<CartDetailsDTO>>() {});
 		return listResponse.getBody();
 	}
