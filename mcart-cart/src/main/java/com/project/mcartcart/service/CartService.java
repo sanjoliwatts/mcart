@@ -152,7 +152,6 @@ public class CartService {
 	}
 	
 	public List<CartDetailsDTO>  getCartDetails(Cart c){
-		
 		List<ServiceInstance> instances=client.getInstances("MCARTCARTDETAILS");
 		ServiceInstance instance=instances.get(0);
 		URI cartDetailsURI = instance.getUri();

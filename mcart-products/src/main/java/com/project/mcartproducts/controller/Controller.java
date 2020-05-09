@@ -25,7 +25,9 @@ public class Controller {
 	
 	@GetMapping("/products/{type}")
 	public List<Products> getProducts(@PathVariable("type") String type) {
-		return mcartService.getProducts(type);
+		List<Products> list= mcartService.getProducts(type);
+		logger.info("list "+list);
+		return list;
 	}
 	
 	@DeleteMapping("/products/{productName}")

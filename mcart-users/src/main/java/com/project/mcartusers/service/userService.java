@@ -24,6 +24,7 @@ final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
 		logger.info("Inside Service validateLogin "+user.toString());
 		//userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
 		Users obj = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
+		logger.info("Result "+(obj!=null));
 		return (obj!=null);
 	}
 	

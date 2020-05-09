@@ -1,5 +1,6 @@
 package com.project.mcartcart.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.catalina.connector.Response;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.project.mcartcart.dto.CartDTO;
 import com.project.mcartcart.entity.Cart;
 import com.project.mcartcart.service.CartService;
@@ -32,10 +34,15 @@ public class Controller {
 	
 	final Logger logger = (Logger)LoggerFactory.getLogger(this.getClass());
 	
+	@HystrixCommand(fallbackMethod = "insertToCartFallback")
 	@PostMapping("/carts")
 	public ResponseEntity<String> insertToCart(@RequestBody CartDTO cartDTO) {
 		
 		return new ResponseEntity<>(cartService.insertToCart(cartDTO),HttpStatus.OK);
+	}
+	
+	public ResponseEntity<String> insertToCartFallback(@RequestBody CartDTO cartDTO) {
+		return new ResponseEntity<>("Insert To Cart Operation Failed. Please try again later",HttpStatus.REQUEST_TIMEOUT);
 	}
 	
 	@PutMapping("/carts")
@@ -44,20 +51,27 @@ public class Controller {
 	}
 	
 	//@RequestMapping(value="/carts", method=RequestMethod.GET)
+	//@HystrixCommand(fallbackMethod = "getCartFallback")
 	@GetMapping(value="/carts")
 	public List<CartDTO> getCart(){
 		logger.info("getcart");
 		return cartService.getCart();
 	}
 	
+//	public List<CartDTO> getCartFallback(){
+//		logger.info("Inside Fallback ");
+//		return new ArrayList<CartDTO>();
+//	}
+	
 	/**
 	 * Method used to get object from cart for a particular user
 	 * @RequestMapping(value="/carts", method=RequestMethod.GET, params="username") can also be used
 	 * @param username
 	 * @return Cart
+	 * @throws Exception 
 	 */
 	@GetMapping(value="/carts",  params="username")
-	public CartDTO getCartByUsername(@RequestParam String username) {
+	public CartDTO getCartByUsername(@RequestParam String username){
 		return cartService.getCartByUsername(username);
 	}
 	

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.project.mcartusers.dto.UsersDTO;
 import com.project.mcartusers.entity.Users;
 import com.project.mcartusers.service.userService;
 
+@Validated
 @RestController
 @RequestMapping("/")
 public class Controller {
@@ -31,7 +33,7 @@ public class Controller {
 
 	@PostMapping("/users/login")
 	public Boolean validateLogin(@RequestBody Users users) {
-		logger.info("Inside Controller validate login");
+		logger.info("Inside Controller validate login "+users);
 		return service.validateLogin(users);
 	}
 	
